@@ -42,11 +42,11 @@
   </fieldset>
 
   <section id="error-btns">
-    <button>Console Log Demo</button>
-    <button>Console Error Demo</button>
-    <button>Console Dir</button>
-    <button>Console dirxml</button>
-    <button>Console Group Start</button>
+    <button >Console Log Demo</button>
+    <button >Console Error Demo</button>
+    <button >Console Dir</button>
+    <button >Console dirxml</button>
+    <button >Console Group Start</button>
     <button>Console Group End</button>
     <button>Console Table</button>
     <button>Start Timer</button>
@@ -54,19 +54,138 @@
     <button>Console Trace</button>
     <button>Trigger a Global Error</button>
   </section>
-
+  <script src="https://cdn.trackjs.com/agent/v3/latest/t.js"></script>
   <script>
+    window.TrackJS && TrackJS.install({ 
+      token: "10442e8d1c0642b09df6a64bad2738f0"
+      // for more configuration options, see https://docs.trackjs.com
+    });
+  </script>
+  
+                        
+  <script>
+    // custom error type
+  class DivideByZeroError extends Error {
+    constructor(message) {
+      super(message); 
+      this.name = "DivideByZeroError"; 
+    }
+  }
+
+
     let calculateBtn = document.querySelector('#calculate');
     calculateBtn.addEventListener('click', () => {
       let output = document.querySelector('output');
       let firstNum = document.querySelector('#first-num').value;
       let secondNum = document.querySelector('#second-num').value;
       let operator = document.querySelector('#operator').value;
+
+      try {
+        if (operator == '/' && secondNum == 0){
+          // create error
+          throw new DivideByZeroError('Divisor is zero');
+        }
+   
+      } catch (err) {
+        console.error(err)
+
+      } finally {
+        console.log("Finally, we are here!!!")
+
+      }
       output.innerHTML = eval(`${firstNum} ${operator} ${secondNum}`);
     });
 
     let errorBtns = Array.from(document.querySelectorAll('#error-btns > button'));
     // TODO - Make buttons functional
+    errorBtns[0].addEventListener('click',()=>{
+      console.log('Console Log Demo');
+    });
+    errorBtns[1].addEventListener('click',()=>{
+      console.error('Console Error Demo');
+    });
+    errorBtns[2].addEventListener('click',()=>{
+      console.dir(errorBtns[2]);
+    });
+    errorBtns[3].addEventListener('click',()=>{
+      console.dirxml(document);
+    });
+    const label = 'CSE Courses';
+    errorBtns[4].addEventListener('click',()=>{
+      
+      console.group(label);
+      console.info('CSE12');
+      console.info('CSE100');
+      console.info('CSE105');
+      console.info('CSE 110')
+
+
+      
+
+    });
+    errorBtns[5].addEventListener('click',()=>{
+      console.groupEnd(label)
+      
+
+    });
+    errorBtns[6].addEventListener('click',()=>{
+      // table
+      console.table([
+        {
+          class : 'CSE110',
+          quarter: 'SP21',
+          
+
+        },
+        {
+          class : 'CSE101',
+          quarter: 'SP21',
+
+        },
+        {
+          class : 'CSE105',
+          quarter : 'WI20',
+
+        }
+        
+      ]);
+
+      
+
+    });
+    errorBtns[7].addEventListener('click',()=>{
+      console.time();
+    });
+    errorBtns[8].addEventListener('click',()=>{
+      console.timeEnd();
+
+      
+
+    });
+    errorBtns[9].addEventListener('click',()=>{
+      const layer1 = () => { layer2();};
+      const layer2 = () => { layer3();};
+      const layer3 = () => {console.trace();};
+      layer1();
+
+      
+
+    });
+    window.onerror = () =>{
+      console.log('We caught an error bro.');
+      TrackJS.track('Testing TrackJS!');
+
+    };
+    errorBtns[10].addEventListener('click',()=>{
+      //global error
+      console.log(boom);
+      
+
+      
+
+    });
+    
+    
   </script>
 </body>
 </html>
